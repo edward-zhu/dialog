@@ -33,9 +33,9 @@ class RequestSlotTracker(nn.Module):
         input: state tracker output `state_t`
         output: value binary distribution `P(v_s_t| state_t)`
     '''
-    def __init__(self, input_dim, n_choices):
-        super(RequestSloatTracker, self).__init__()
-        self.fc = nn.Linear(input_dim, 1)
+    def __init__(self, input_dim):
+        super(RequestSlotTracker, self).__init__()
+        self.fc = nn.Linear(input_dim, 2)
 
     def forward(self, state):
         return self.fc(state)

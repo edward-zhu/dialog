@@ -1,11 +1,13 @@
+import sys
 import json
 import pprint
 import random
 import pickle
 
-from nltk.tokenize import RegexpTokenizer
-
 from collections import defaultdict
+
+from nltk.tokenize import RegexpTokenizer
+from nltk import wordpunct_tokenize
 
 import torch
 import torch.nn as nn
@@ -13,8 +15,9 @@ import torch.nn as nn
 import numpy as np
 
 from kb import load_kb
+from common.utils import pad_sequence
 
-Debug = 1
+Debug = 0
 
 if Debug > 0:
     from torch.autograd import Variable
@@ -41,10 +44,10 @@ def load_dialogs(diag_fn, kb):
             for state in turn['belief_state']:
                 if state["act"] == "inform":
                     slots.append(state["slots"][0])
-                    state["slots"][0][0] = state["slots"][0][0].replace(" ", "")
+                    state["slots"][0][0] = state["slots"][0][0].replace(" ", "").replace("center", "centre")
                     search_keys.append(state["slots"][0])
                 elif state["act"] == 'request':
-                    slots.append((state["slots"][0][1], "care"))
+                    slots.append((state["slots"][0][1].replace(" ", "") + "_req", "care")) 
                 else:
                     raise RuntimeError("illegal state : %s" % (state, ))
             
@@ -75,19 +78,42 @@ ref: https://github.com/A-Jacobson/CNN_Sentence_Classification/blob/master/WordV
 
 if out_fn is set to a filename, it can save generated embedding model to it.
 '''
-def load_vocab_and_embedding(vocab_fn, dim=300, strip=True, out_fn=None):
+def load_vocab_and_embedding(vocab_fn, dim=300, strip=0, max_len=20, subset=None, out_fn=None):
     vocab = {"<null>" : np.zeros(dim), }
     word2idx = {'<null>' : 0, }
 
+    idx = 1
+
+    import re
+
+    nopattern = re.compile(r".*[.:/,_\\|!?\d].*|.*[-][-]+.*")
+
     with open(vocab_fn) as f:
-        for idx, line in enumerate(f.readlines()):
+        for line in f.readlines():
             values = line.split()
             word = values[0]
-            if strip:
-                word = word[3:]
+
+            if strip > 0:
+                word = word[strip:]
+
+            if len(word) > max_len:
+                continue
+
+            if len(word) > 1 and nopattern.match(word):
+                continue
+
+            if subset is not None and (word not in subset):
+                continue
+            
             vector = np.array(values[1:], dtype='float32')
             vocab[word] = vector
-            word2idx[word] = idx + 1
+            word2idx[word] = idx
+            idx += 1
+            
+            if Debug > 0:
+                sys.stdout.write('add %d word -> %s\r' % (idx, word,))
+
+    print '-'
 
     embeddings = np.zeros((len(vocab), dim))
     for word in vocab:
@@ -132,10 +158,19 @@ def load_ontology(fn):
         onto_idx[k]['dontcare'] = 0
         for v in values:
             onto_idx[k][v] = len(onto_idx[k])
+        
+        # info slot can also be req slot
+        k = k + "_req"
+        onto[k] = values + ['dontcare']
+        onto_idx[k] = {
+            'dontcare' : 0,
+            'care' : 1,
+        }
 
     req_data = data["requestable"]
     
     for k, values in req_data.iteritems():
+        k = k + "_req"
         onto[k] = values + ['dontcare']
         onto_idx[k] = {
             'dontcare' : 0,
@@ -160,41 +195,57 @@ class DataLoader:
         self.onto_idx = onto_idx
 
         self.tokenizer = RegexpTokenizer(r'\w+')
+
+    def get_vocabs(self):
+        vocabs = []
+        for diag in self.diags:
+            for s in diag['usr_utts']:
+                # print s, self._gen_utt_seq(s)
+                vocabs.extend(self._sent_normalize(s))
+            
+        return set(vocabs)
         
     def _get(self, i):
         diag = self.diags[i]
-        usr_utts = diag['usr_utts']
-        states = [ self._gen_state_for_input(s) for s in diag['states']]
-        kb_found = [ 0 if x == 0 else 1 for x in diag['kb_found']]
+        usr_utts = [ self._gen_utt_seq(s) for s in diag['usr_utts']]
+        usr_utts = torch.LongTensor(pad_sequence(usr_utts))
+        states = self._gen_state_vecs(diag['states'])
+        kb_found = torch.LongTensor([ 0 if x == 0 else 1 for x in diag['kb_found']])
 
-        return diag, usr_utts, states, kb_found
+        return diag['usr_utts'], usr_utts, states, kb_found
 
     def _sent_normalize(self, sent):
-        return self.tokenizer.tokenize(sent.lower())
+        return wordpunct_tokenize(sent.lower())
 
     def _gen_utt_seq(self, utt):
         '''convert string to word idx seq'''
         utt = self._sent_normalize(utt)
         utt = [ self.word2idx.get(x, 0) for x in utt]
+
         return utt
 
-    def _gen_state_for_input(self, state_list):
+    def _gen_state_vecs(self, states):
         '''
-        from: [
-            ['info_slot', 'value'],
-            ['req_slot', 'care/dontcare']
+        from: [,
+            [
+                ['info_slot', 'value'],
+                ['req_slot', 'care/dontcare']
+            ],
+            ...
         ]
 
         to: {
-            'info_slot': 1/2/3...,
-            'req_slot': 1/0
+            'info_slot': LongTensor([4, 0, 3, 5]),
+            'req_slot': LongTensor([0, 1, 0, 1])
         }
         '''
-        states = {k : 0 for k in self.onto}
-        for s, v in state_list:
-            states[s] = self.onto_idx[s][v]
 
-        return states
+        state_vecs = { slot: torch.zeros(len(states)).long() for slot in self.onto }
+        for t, states_at_time_t in enumerate(states):
+            for s, v in states_at_time_t:
+                state_vecs[s][t] = self.onto_idx[s][v]
+        
+        return state_vecs
 
     def next(self):
         '''
@@ -212,6 +263,7 @@ class DataLoader:
         self.cur += 1
         if self.cur == len(self.diags):
             random.shuffle(self.diags)
+            self.cur = 0
 
         return ret
         
@@ -226,10 +278,10 @@ def load_embed_model(fn, embed_dim=300):
 def load_data(**kargs):
     kb = load_kb(kargs["kb"], "name")
 
-    if "embed_model" in kargs:
+    if not kargs["generate_embed"]:
         word2idx, embed = load_embed_model(kargs["embed_model"])
     else:
-        word2idx, embed = load_vocab_and_embedding(kargs["paragram_file"])
+        word2idx, embed = load_vocab_and_embedding(kargs["paragram_file"], out_fn=kargs["embed_model"])
     
     diags = load_dialogs(kargs["diags"], kb)
 
@@ -242,6 +294,12 @@ if __name__ == '__main__':
     with open("config.json") as f:
         conf = json.load(f)
 
+    '''
     loader, embed = load_data(**conf)
 
     pprint.pprint(loader.next())
+    '''
+
+    with open("subset.json") as f:
+        subset = set(json.load(f)['vocabs'])
+        load_vocab_and_embedding(conf["paragram_file"], subset=subset, out_fn="data/vocab_tiny.model")
