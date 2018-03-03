@@ -1,0 +1,6 @@
+{
+    "kb" : "data/CamRest.json",
+    "embed_model" : "data/vocab.model",
+    "diags": "data/woz2_train.json",
+    "ontology": "data/CamRestOTGY.json"
+}
