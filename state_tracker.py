@@ -6,9 +6,10 @@ class StateTracker(nn.Module):
 
     def __init__(self, feat_size, hidden_size):
         super(StateTracker, self).__init__()
-        self.gru = nn.GRU(input_size=feat_size, hidden_size=hidden_size)
+        self.gru = nn.GRU(input_size=feat_size,
+                            hidden_size=hidden_size, batch_first=True)
 
     def forward(self, inp):
         out, h_n = self.gru(inp)
 
-        return h_n
+        return out

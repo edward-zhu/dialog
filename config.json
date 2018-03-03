@@ -1,6 +1,19 @@
 {
     "kb" : "data/CamRest.json",
-    "embed_model" : "data/vocab.model",
+    "embed_model" : "data/vocab_tiny.model",
     "diags": "data/woz2_train.json",
-    "ontology": "data/CamRestOTGY.json"
+    "ontology": "data/CamRestOTGY.json",
+
+    "generate_embed" : false,
+    "paragram_file" : "data/paragram_300_sl999.txt",
+
+    "sentvec_size": 200,
+    "state_tracker_hidden_size" : 100,
+
+    "epoch": 10000,
+    "vocab_dim": 300,
+
+    "lr" : 1e-3,
+    "momentum": 0.9
+
 }
