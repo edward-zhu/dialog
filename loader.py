@@ -186,7 +186,7 @@ class DataLoader:
     a dialog data warehose
     '''
 
-    def __init__(self, diags, word2idx, onto, onto_idx):
+    def __init__(self, diags, word2idx, onto, onto_idx, kb_fonud_len=5, mode='train'):
         self.diags = diags
         self.word2idx = word2idx
         self.cur = 0
@@ -195,6 +195,11 @@ class DataLoader:
         self.onto_idx = onto_idx
 
         self.tokenizer = RegexpTokenizer(r'\w+')
+
+        self.kb_found_len = kb_fonud_len
+        self.kb_indicator = torch.eye(kb_fonud_len + 2).long()
+
+        self.mode = mode
 
     def get_vocabs(self):
         vocabs = []
@@ -210,7 +215,9 @@ class DataLoader:
         usr_utts = [ self._gen_utt_seq(s) for s in diag['usr_utts']]
         usr_utts = torch.LongTensor(pad_sequence(usr_utts))
         states = self._gen_state_vecs(diag['states'])
-        kb_found = torch.LongTensor([ 0 if x == 0 else 1 for x in diag['kb_found']])
+        kb_found = torch.cat([ self.kb_indicator[x].view(1, -1) 
+                            if x <= self.kb_found_len else self.kb_indicator[self.kb_found_len + 1].view(1, -1) 
+                            for x in diag['kb_found']])
 
         return diag['usr_utts'], usr_utts, states, kb_found
 
@@ -247,6 +254,12 @@ class DataLoader:
         
         return state_vecs
 
+    def __iter__(self):
+        return self
+
+    def reset(self):
+        self.cur = 0
+
     def next(self):
         '''
         get one dialog training data
@@ -262,6 +275,8 @@ class DataLoader:
 
         self.cur += 1
         if self.cur == len(self.diags):
+            if self.mode == 'test':
+                raise StopIteration()
             random.shuffle(self.diags)
             self.cur = 0
 
@@ -283,11 +298,15 @@ def load_data(**kargs):
     else:
         word2idx, embed = load_vocab_and_embedding(kargs["paragram_file"], out_fn=kargs["embed_model"])
     
-    diags = load_dialogs(kargs["diags"], kb)
+    diags_train = load_dialogs(kargs["diags_train"], kb)
+    diags_val = load_dialogs(kargs["diags_val"], kb)
+    diags_test = load_dialogs(kargs["diags_test"], kb)
 
     onto, onto_idx = load_ontology(kargs["ontology"])
 
-    return DataLoader(diags, word2idx, onto, onto_idx), embed
+    return DataLoader(diags_train, word2idx, onto, onto_idx), \
+            DataLoader(diags_val, word2idx, onto, onto_idx, mode='test'), \
+            DataLoader(diags_test, word2idx, onto, onto_idx, mode='test'), embed
 
 
 if __name__ == '__main__':
@@ -295,9 +314,16 @@ if __name__ == '__main__':
         conf = json.load(f)
 
     '''
-    loader, embed = load_data(**conf)
+    tloader, vloader, testloader, embed = load_data(**conf)
 
-    pprint.pprint(loader.next())
+    union_subset = set(vloader.get_vocabs()).union(set(tloader.get_vocabs())).union(set(testloader.get_vocabs()))
+
+    with open("subset.json", "w") as f:
+        json.dump({
+            "vocabs" : list(union_subset)
+        }, f)
+
+    # pprint.pprint(loader.next())
     '''
 
     with open("subset.json") as f:

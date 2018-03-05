@@ -43,7 +43,7 @@ class Model(nn.Module):
         self.encoder = SentenceEncoder(embed, 200, self.sentvec_size / 2, 1)
 
         # input = sentvec (sentvec_size) + kb_found (1)
-        self.state_tracker = StateTracker(self.sentvec_size + 1, self.state_tracker_hidden_size)
+        self.state_tracker = StateTracker(self.sentvec_size + conf["kb_indicator_len"], self.state_tracker_hidden_size)
 
         self.onto = onto
         
@@ -63,8 +63,8 @@ class Model(nn.Module):
         # sentvecs: N * sentvec_size
         # kb_found: N * 1
 
-        sentvecs_kb_found = torch.cat((sentvecs, kb_found.view(-1, 1).float()), dim=1)
-        sentvecs_kb_found = sentvecs_kb_found.view(1, -1, self.sentvec_size + 1)
+        sentvecs_kb_found = torch.cat((sentvecs, kb_found.view(sentvecs.size(0), -1).float()), dim=1)
+        sentvecs_kb_found = sentvecs_kb_found.view(1, sentvecs.size(0), -1)
                                     
 
         # state_reps: N * state_tracker_hidden_size 

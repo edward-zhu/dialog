@@ -1,11 +1,15 @@
 {
     "kb" : "data/CamRest.json",
     "embed_model" : "data/vocab_tiny.model",
-    "diags": "data/woz2_train.json",
+    "diags_train": "data/woz2_train.delexed.json",
+    "diags_val": "data/woz2_dev.delexed.json",
+    "diags_test" : "data/woz2_test.json",
     "ontology": "data/CamRestOTGY.json",
 
     "generate_embed" : false,
     "paragram_file" : "data/paragram_300_sl999.txt",
+
+    "kb_indicator_len" : 7,
 
     "sentvec_size": 200,
     "state_tracker_hidden_size" : 100,
@@ -14,6 +18,8 @@
     "vocab_dim": 300,
 
     "lr" : 1e-3,
-    "momentum": 0.9
+    "momentum": 0.9,
+
+    "model_dir" : "models/"
 
 }
