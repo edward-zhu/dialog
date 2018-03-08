@@ -20,7 +20,7 @@ class SentenceEncoder(nn.Module):
         output: an encoded vector 
     '''
 
-    def __init__(self, embed, da, hidden_size, output_dim):
+    def __init__(self, embed, da, hidden_size, output_dim, att=False):
         super(SentenceEncoder, self).__init__()
         self.hidden_size = hidden_size
         self.output_dim = output_dim
@@ -28,9 +28,11 @@ class SentenceEncoder(nn.Module):
 
         self.emb = embed
         self.gru = nn.GRU(input_size=self.emb.embedding_dim, 
-                            hidden_size=self.hidden_size, bidirectional=True, dropout=True, batch_first=True)
-        # self.fc = nn.Linear(2 * self.hidden_size, self.da)
-        # self.att = nn.Linear(self.da, self.output_dim)
+                            hidden_size=self.hidden_size, bidirectional=True, dropout=0.9, batch_first=True)
+        self.att = att
+        if self.att:
+            self.fc = nn.Linear(2 * self.hidden_size, self.da)
+            self.att = nn.Linear(self.da, self.output_dim)
 
     def forward(self, sent):
         embds = self.emb(sent)  # b x n x d
@@ -39,15 +41,16 @@ class SentenceEncoder(nn.Module):
         h = h.transpose(0, 1)
         # print h.size()
 
-        return h.contiguous().view(sent.size(0), -1)
+        if not self.att:
+            return h.contiguous().view(sent.size(0), -1)
 
-        # after_fc = F.tanh(self.fc(out)) # b * n * da
-        # att = F.softmax(self.att(after_fc), dim=self.output_dim)
-        # att_applied = att.transpose(1,2).bmm(out) # n * r * 2h
+        after_fc = F.tanh(self.fc(out)) # b * n * da
+        att = F.softmax(self.att(after_fc), dim=self.output_dim)
+        att_applied = att.transpose(1,2).bmm(out) # n * r * 2h
 
-        # att_applied = att_applied.view(sent.size(0), -1) # flatten representation
+        att_applied = att_applied.view(sent.size(0), -1) # flatten representation
         # final size b x 2h * output_dm
-        # return att_applied
+        return att_applied
 
 if __name__ == '__main__':
     import json

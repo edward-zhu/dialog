@@ -4,21 +4,32 @@
     "diags_train": "data/woz2_train.delexed.json",
     "diags_val": "data/woz2_dev.delexed.json",
     "diags_test" : "data/woz2_test.json",
+
+    "sys_vocab" : "data/sys_vocab.json",
     "ontology": "data/CamRestOTGY.json",
+
+    "tracker_model": "models/tracker_3301.model",
 
     "generate_embed" : false,
     "paragram_file" : "data/paragram_300_sl999.txt",
 
     "kb_indicator_len" : 7,
 
-    "sentvec_size": 200,
-    "state_tracker_hidden_size" : 100,
+    "sentvec_size": 300,
+    "state_tracker_hidden_size" : 200,
+    "cond_size" : 350,
+    "generator_hidden_size" : 300,
+    "teacher_forcing_ratio" : 0.5,
 
-    "epoch": 10000,
+    "epoch": 200000,
     "vocab_dim": 300,
+    "sys_embed_dim" : 300,
 
     "lr" : 1e-3,
     "momentum": 0.9,
+    "early_stopping" : 10,
+    "sent_group_size" : 200,
+    "sent_groups": "data/groups.json",
 
     "model_dir" : "models/"
 

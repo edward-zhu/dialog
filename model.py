@@ -6,26 +6,37 @@ from encoder import SentenceEncoder
 from slot_tracker import InformSlotTracker, RequestSlotTracker
 from state_tracker import StateTracker
 
-def gen_model_and_loss(onto, embed, conf):
+def gen_tracker_model_and_loss(onto, embed, conf):
     state_tracker_hidden_size = conf["state_tracker_hidden_size"]
 
     slot_trackers = {}
+
+    slot_len_sum = 0
 
     for slot in onto:
         if len(onto[slot]) > 2:
             slot_trackers[slot] = \
                 InformSlotTracker(state_tracker_hidden_size, len(onto[slot]))
+            slot_len_sum += len(onto[slot]) + 1
         else:
             slot_trackers[slot] = \
                 RequestSlotTracker(state_tracker_hidden_size)
+            slot_len_sum += 2 
 
 
     model = Model(onto, embed, conf, slot_trackers)
     loss = SlotLoss()
 
-    return model, loss
+    return model, loss, slot_len_sum
 
+def load_tracker_model(onto, embed, conf):
+    model, _, slot_len_sum = gen_tracker_model_and_loss(onto, embed, conf)
 
+    with open(conf["tracker_model"], 'rb') as f:
+        state_dict = torch.load(f)
+        model.load_state_dict(state_dict)
+
+    return model, slot_len_sum
 
 class Model(nn.Module):
     '''
@@ -38,9 +49,10 @@ class Model(nn.Module):
         super(Model, self).__init__()
         self.sentvec_size = conf["sentvec_size"]
         self.state_tracker_hidden_size = conf["state_tracker_hidden_size"]
+        self.sent_group_size = conf["sent_group_size"]
 
         # sentvec_size = hidden * 2 * output_dim
-        self.encoder = SentenceEncoder(embed, 200, self.sentvec_size / 2, 1)
+        self.encoder = SentenceEncoder(embed, 300, self.sentvec_size / 2, 1)
 
         # input = sentvec (sentvec_size) + kb_found (1)
         self.state_tracker = StateTracker(self.sentvec_size + conf["kb_indicator_len"], self.state_tracker_hidden_size)
@@ -49,9 +61,12 @@ class Model(nn.Module):
         
         self.slot_trackers = slot_trackers
 
+        # register slot trackers
         self.slot_trackers_list = nn.ModuleList(self.slot_trackers.values())
 
-    def forward(self, usr_utts, kb_found):
+        self.sent_group_fc = nn.Linear(self.state_tracker_hidden_size, self.sent_group_size)
+
+    def forward(self, usr_utts, kb_found, state_trk_hidden):
         '''
         N = n_sents
         usr_utts: Variable(torch.LongTensor(N*max_len(sents)))
@@ -68,11 +83,13 @@ class Model(nn.Module):
                                     
 
         # state_reps: N * state_tracker_hidden_size 
-        state_reps = self.state_tracker(sentvecs_kb_found)
+        state_reps, hidden = self.state_tracker(sentvecs_kb_found, state_trk_hidden)
 
         state_pred = { slot : self.slot_trackers[slot](state_reps) for slot in self.onto }
 
-        return state_reps, state_pred
+        sent_group_pred = self.sent_group_fc(state_reps)
+
+        return sentvecs, state_reps, state_pred, hidden, sent_group_pred
 
 class SlotLoss(nn.Module):
     def __init__(self):

@@ -6,25 +6,28 @@ import pickle
 
 from collections import defaultdict
 
-from nltk.tokenize import RegexpTokenizer
-from nltk import wordpunct_tokenize
-
 import torch
 import torch.nn as nn
 
 import numpy as np
 
 from kb import load_kb
-from common.utils import pad_sequence
+from common.utils import pad_sequence, tokenize
 
 Debug = 0
 
 if Debug > 0:
     from torch.autograd import Variable
 
-def load_dialogs(diag_fn, kb):
+def load_dialogs(diag_fn, kb, groups_fn=None):
     with open(diag_fn) as f:
         diags = json.load(f)
+
+    group_iter = None
+    if groups_fn is not None:
+        with open(groups_fn) as f:
+            groups = json.load(f)["labels"] 
+        group_iter = iter(groups)
 
     data = []
 
@@ -34,9 +37,11 @@ def load_dialogs(diag_fn, kb):
         states = []
         kb_found = []
 
+        sys_utt_grps = []
+
         for turn in diag['dialogue']:
             usr_utts.append(turn['transcript'])
-            sys_utts.append(turn['system_transcript'])
+            sys_utts.append("<sos> " + turn['system_transcript'] + " <eos>")
 
             slots = []
             search_keys = []
@@ -58,9 +63,15 @@ def load_dialogs(diag_fn, kb):
 
         sys_utts = sys_utts[1:] # the first sys_utt is always empty
 
+        if group_iter is not None:
+            for _ in sys_utts:
+                group = next(group_iter)
+                sys_utt_grps.append(group)
+
         data.append({
             'usr_utts': usr_utts,
             'sys_utts':sys_utts,
+            'sys_utt_grps' : sys_utt_grps,
             'states':states,
             'kb_found':kb_found,
         })
@@ -70,6 +81,15 @@ def load_dialogs(diag_fn, kb):
 
 
     return data
+
+def load_sys_vocab(sys_vocab_fn):
+    with open(sys_vocab_fn) as f:
+        vocabs = json.load(f)
+
+    vocabs = vocabs["vocabs"]
+    
+    return vocabs, { w : i for i, w in enumerate(vocabs) }
+
 
 '''
 Load vocabulary
@@ -86,6 +106,7 @@ def load_vocab_and_embedding(vocab_fn, dim=300, strip=0, max_len=20, subset=None
 
     import re
 
+    # a naive filter for those apparently non-sense words
     nopattern = re.compile(r".*[.:/,_\\|!?\d].*|.*[-][-]+.*")
 
     with open(vocab_fn) as f:
@@ -186,15 +207,16 @@ class DataLoader:
     a dialog data warehose
     '''
 
-    def __init__(self, diags, word2idx, onto, onto_idx, kb_fonud_len=5, mode='train'):
+    def __init__(self, diags, word2idx, sys_word2idx, onto, onto_idx, kb_fonud_len=5, mode='train'):
         self.diags = diags
+
         self.word2idx = word2idx
+        self.sys_word2idx = sys_word2idx
+        
         self.cur = 0
 
         self.onto = onto
         self.onto_idx = onto_idx
-
-        self.tokenizer = RegexpTokenizer(r'\w+')
 
         self.kb_found_len = kb_fonud_len
         self.kb_indicator = torch.eye(kb_fonud_len + 2).long()
@@ -203,31 +225,44 @@ class DataLoader:
 
     def get_vocabs(self):
         vocabs = []
+        sys_vocabs = []
         for diag in self.diags:
             for s in diag['usr_utts']:
                 # print s, self._gen_utt_seq(s)
                 vocabs.extend(self._sent_normalize(s))
+            for s in diag['sys_utts']:
+                print self._sent_normalize(s)
+                sys_vocabs.extend(self._sent_normalize(s))
             
-        return set(vocabs)
+        return set(vocabs), set(sys_vocabs)
         
     def _get(self, i):
         diag = self.diags[i]
-        usr_utts = [ self._gen_utt_seq(s) for s in diag['usr_utts']]
+        usr_utts = [ self._gen_utt_seq(self.word2idx, s) for s in diag['usr_utts']]
         usr_utts = torch.LongTensor(pad_sequence(usr_utts))
         states = self._gen_state_vecs(diag['states'])
         kb_found = torch.cat([ self.kb_indicator[x].view(1, -1) 
                             if x <= self.kb_found_len else self.kb_indicator[self.kb_found_len + 1].view(1, -1) 
                             for x in diag['kb_found']])
+        sys_utts = [ self._gen_utt_seq(self.sys_word2idx, s)for s in diag['sys_utts']]
+        sys_utts = [ torch.LongTensor(utt).view(1, -1) for utt in sys_utts] # B (=1) * N words
 
-        return diag['usr_utts'], usr_utts, states, kb_found
+        sys_utt_grps = torch.LongTensor(diag['sys_utt_grps'])
+
+        return diag['usr_utts'], diag['sys_utts'], usr_utts, sys_utts, states, kb_found, sys_utt_grps
 
     def _sent_normalize(self, sent):
-        return wordpunct_tokenize(sent.lower())
+        return tokenize(sent.lower())
 
-    def _gen_utt_seq(self, utt):
-        '''convert string to word idx seq'''
+    def _gen_utt_seq(self, word2idx, utt):
+        '''
+        convert string to word idx seq
+        input: word2idx -> { word: # }
+        '''
         utt = self._sent_normalize(utt)
-        utt = [ self.word2idx.get(x, 0) for x in utt]
+
+        # unknown word is assigned <nuk>
+        utt = [ word2idx.get(x, 0) for x in utt]
 
         return utt
 
@@ -265,7 +300,10 @@ class DataLoader:
         get one dialog training data
 
         per turn:
-        - user utt (in array of word indexes)
+        - user utts ([sentence, ])
+        - sys utts ([sentence, ]])
+        - user utt (LongTensor(N sentences * N words (in word idx)))
+        - sys utt ([ LongTensor(B (=1) * N words (in word idx)) , ... N sentences])
         - states
             - informable: value #
             - requestable: 0 / 1
@@ -290,35 +328,47 @@ def load_embed_model(fn, embed_dim=300):
     embed.load_state_dict(torch.load(fn))
     return word2idx, embed
 
-def load_data(**kargs):
-    kb = load_kb(kargs["kb"], "name")
-
+def load_embed(**kargs):
     if not kargs["generate_embed"]:
         word2idx, embed = load_embed_model(kargs["embed_model"])
     else:
         word2idx, embed = load_vocab_and_embedding(kargs["paragram_file"], out_fn=kargs["embed_model"])
+
+    return word2idx, embed
+
+
+def load_data(**kargs):
+    kb = load_kb(kargs["kb"], "name")
+
+    word2idx, embed = load_embed(**kargs)
+
+    sys_vocab, sys_word2idx = load_sys_vocab(kargs["sys_vocab"])
     
-    diags_train = load_dialogs(kargs["diags_train"], kb)
+    diags_train = load_dialogs(kargs["diags_train"], kb, kargs["sent_groups"])
     diags_val = load_dialogs(kargs["diags_val"], kb)
     diags_test = load_dialogs(kargs["diags_test"], kb)
 
     onto, onto_idx = load_ontology(kargs["ontology"])
 
-    return DataLoader(diags_train, word2idx, onto, onto_idx), \
-            DataLoader(diags_val, word2idx, onto, onto_idx, mode='test'), \
-            DataLoader(diags_test, word2idx, onto, onto_idx, mode='test'), embed
+    return DataLoader(diags_train, word2idx, sys_word2idx, onto, onto_idx), \
+            DataLoader(diags_val, word2idx, sys_word2idx, onto, onto_idx, mode='test'), \
+            DataLoader(diags_test, word2idx, sys_word2idx, onto, onto_idx, mode='test'), embed, sys_vocab
 
 
 if __name__ == '__main__':
     with open("config.json") as f:
         conf = json.load(f)
 
+    '''   
+    tloader, vloader, testloader, embed, sys_vocab = load_data(**conf)
+
+    print tloader.next()
     '''
-    tloader, vloader, testloader, embed = load_data(**conf)
 
-    union_subset = set(vloader.get_vocabs()).union(set(tloader.get_vocabs())).union(set(testloader.get_vocabs()))
+    '''
+    union_subset = set(vloader.get_vocabs()[1]).union(set(tloader.get_vocabs()[1]))
 
-    with open("subset.json", "w") as f:
+    with open("sys_subset.json", "w") as f:
         json.dump({
             "vocabs" : list(union_subset)
         }, f)
@@ -326,6 +376,8 @@ if __name__ == '__main__':
     # pprint.pprint(loader.next())
     '''
 
+    '''
     with open("subset.json") as f:
         subset = set(json.load(f)['vocabs'])
         load_vocab_and_embedding(conf["paragram_file"], subset=subset, out_fn="data/vocab_tiny.model")
+    '''
