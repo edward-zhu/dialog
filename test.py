@@ -22,11 +22,13 @@ CONFIG_FN = 'config.json'
 sent_groups = {}
 
 def print_ret(states_pred, sent_groups_pred):
+    states_pred_dict = {}
     for slot in states_pred:
         _, argmax = states_pred[slot].data[0][0].max(0)
-        print '%s pred: %d' % (slot, argmax, )
+        states_pred_dict[slot] = argmax
+        print '%s pred: %d' % (slot, argmax,)
 
-    maxs, argmaxs = sent_groups_pred.data[0][0].topk(3)
+    maxs, argmaxs = sent_groups_pred.data[0][0].topk(1)
 
     for i, argmax in enumerate(argmaxs):
         print 'sys utt pred: (%d, %.2f)' % (argmax, maxs[i]) + random.choice(sent_groups[str(int(argmax))])

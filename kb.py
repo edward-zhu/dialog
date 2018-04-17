@@ -48,4 +48,4 @@ class KnowledgeBase:
 if __name__ == '__main__':
     kb = load_kb("data/CamRest.json", "name")
 
-    print kb.search_multi([[u'pricerange', u'cheap'], [u'area', u'east']])
+    print kb.get(list(kb.search_multi([['pricerange', 'cheap'], ['area', 'east']]))[0]).get("name")
