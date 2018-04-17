@@ -86,7 +86,7 @@ def main():
         criteria = to_search_criteria(states_preds, onto)
         ret, kb_vec = get_kb_result(kb, criteria, conf["kb_indicator_len"])
 
-        print criteria, kb_vec
+        # print criteria, kb_vec
 
         sentvecs = sentvecs.view(1, -1)
         states_reps = states_reps.view(1, -1)
