@@ -9,3 +9,5 @@
 data/
 models/*
 cluster/
+.idea/
+.DS_Store
