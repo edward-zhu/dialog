@@ -1,38 +1,44 @@
 import random
-from kb import load_kb
 
 
 class SentenceGenerator:
-    def __init__(self, kb):
+    def __init__(self, kb, onto, sent_groups):
         self.last_states_pred_dict = None
         self.last_selected_search_result = None
         self.kb = kb
+        self.onto = onto
+        self.sent_groups = sent_groups
         self.sent_type_mapping = {
             # TODO
         }
 
-    def generate(self, states_pred_dict, sent_type, sent_groups, onto):
+    def generate(self, states_pred_dict, sent_type):
         # the index of onto is 1 greater than argmax
         sentence = ""
-        # area food pricerange
+        # possible search fields: area, food, and pricerange
         search_query = []
 
-        if states_pred_dict.get("area") == self.last_states_pred_dict.get("area") and states_pred_dict.get(
-                "food") == self.last_states_pred_dict.get("food") and states_pred_dict.get(
-                "pricerange") == self.last_states_pred_dict.get("pricerange"):
+        if self.last_states_pred_dict is not None \
+                and self.last_states_pred_dict is not None \
+                and states_pred_dict.get("area") == self.last_states_pred_dict.get("area") \
+                and states_pred_dict.get("food") == self.last_states_pred_dict.get("food") \
+                and states_pred_dict.get("pricerange") == self.last_states_pred_dict.get("pricerange"):
             selected_search_result = self.last_selected_search_result
         else:
             for key, value in states_pred_dict:
                 if not key.endswith("_req"):
-                    search_query.append([key, onto.get(key)[value - 1]])
+                    search_query.append([key, self.onto.get(key)[value - 1]])
             search_result = list(self.kb.search_multi(search_query))
             if len(search_result) != 0:
                 selected_search_result = search_result[0]
+                self.last_states_pred_dict = states_pred_dict
                 self.last_selected_search_result = selected_search_result
-                original_sent = random.choice(sent_groups[sent_type])
+                original_sent = random.choice(self.sent_groups[sent_type])
                 original_words = original_sent.split(" ")
             elif len(search_result) == 0:
-                original_sent = random.choice(sent_groups[str(int(41))])
+                self.last_selected_search_result = None
+                self.last_selected_search_result = None
+                original_sent = random.choice(self.sent_groups[str(int(41))])
                 original_words = original_sent.split(" ")
         for original_word in original_words:
             if original_word == "<v.ADDRESS>":
@@ -65,5 +71,4 @@ class SentenceGenerator:
                 sentence = sentence + "pricerange "
             else:
                 sentence = sentence + original_word + " "
-        self.last_states_pred_dict = states_pred_dict
         return sentence
