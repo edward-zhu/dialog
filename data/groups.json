@@ -2350,7 +2350,7 @@
             "<sos> <v.NAME> serves <v.FOOD> <s.FOOD> . it's an <v.PRICERANGE> restaurant in the <v.AREA> <s.AREA> . <eos>"
         ], 
         "129": [
-            "<sos> no , there are no <v.FOOD> restaurants in town. would you like a different restaurant? <eos>", 
+            "<sos> no , there are no <v.FOOD> restaurants in town. <eos>", 
             "<sos> so there are no <v.FOOD> restaurants in town? <eos>", 
             "<sos> there are no <v.FOOD> restaurants with <v.PRICERANGE> <s.FOOD> in your town. <eos>", 
             "<sos> so there are no <v.FOOD> restaurants in town? <eos>"
@@ -2438,8 +2438,8 @@
             "<sos> <v.NAME> is a <v.FOOD> restaurant and can be reached at <v.PHONE> <v.ADDRESS> . <eos>"
         ], 
         "56": [
-            "<sos> i'm sorry no records match your current search , can i offer you a different <s.FOOD> choice today? <eos>", 
-            "<sos> i'm sorry no records match you search , can i offer you a different <s.FOOD> style today? <eos>", 
+            "<sos> i'm sorry no records match your current search.<eos>", 
+            "<sos> i'm sorry no records match you search. <eos>", 
             "<sos> i'm sorry but there are no <v.FOOD> serving restaurants in that <s.AREA> . would you like to expand your search? <eos>", 
             "<sos> there are none , sorry. anything else i can search for you? <eos>", 
             "<sos> i'm sorry , we do not have any <v.FOOD> restaurants in your <s.AREA> . would you like for me to search for another <s.FOOD> ? <v.FOOD> , perhaps? <eos>", 
@@ -2472,8 +2472,8 @@
             "<sos> i'm sorry , there are <v.FOOD> restaurants. do you have a secondary choice? <eos>", 
             "<sos> i'm sorry there is not. <eos>", 
             "<sos> i apologize , but i'm unable to find any <v.FOOD> restaurants. may i search for something else for you instead? <eos>", 
-            "<sos> i'm sorry but there doesn't seem to be any <v.PRICERANGE> ly priced <v.FOOD> restaurants in the <s.AREA> . would you like to try a different <s.FOOD> ? <eos>", 
-            "<sos> i'm unable to find any restaurants serving <v.FOOD> <s.FOOD> . would you like a different <s.FOOD> ? <eos>"
+            "<sos> i'm sorry but there doesn't seem to be any <v.PRICERANGE> ly priced <v.FOOD> restaurants in the <s.AREA> . <eos>", 
+            "<sos> i'm unable to find any restaurants serving <v.FOOD> <s.FOOD> . <eos>"
         ], 
         "164": [
             "<sos> sure their located at <v.ADDRESS> and their <s.POSTCODE> is <v.POSTCODE> can i assist you with anything else? <eos>", 
@@ -2922,8 +2922,8 @@
             "<sos> i have no <v.FOOD> restaurants , but several <v.PRICERANGE> ly priced <v.FOOD> restaurants. which <s.AREA> would you prefer? <eos>", 
             "<sos> there are no other <v.PRICERANGE> ly priced restaurants located in the <v.AREA> <s.AREA> . i can show you <v.PRICERANGE> ly priced restaurants in other parts <s.AREA> . <eos>", 
             "<sos> no , i'm afraid not. would you like information for a <v.PRICERANGE> ly priced one? <eos>", 
-            "<sos> there are no <v.PRICERANGE> ly priced <v.FOOD> restaurants. would you like something different? <eos>", 
-            "<sos> not <v.PRICERANGE> ly priced in the <v.AREA> end...would you be interested in a different <s.PRICERANGE> or <s.AREA> ? <eos>", 
+            "<sos> there are no <v.PRICERANGE> ly priced <v.FOOD> restaurants. <eos>", 
+            "<sos> not <v.PRICERANGE> ly priced in the <v.AREA> <eos>", 
             "<sos> there are no restaurants <v.PRICERANGE> ly priced that serves <v.FOOD> <s.FOOD> . <eos>", 
             "<sos> there are no <v.PRICERANGE> ly priced <v.FOOD> restaurants in any <s.AREA> . might another <s.FOOD> interest you? <eos>"
         ], 
@@ -3521,9 +3521,9 @@
             "<sos> there are no <v.FOOD> restaurants listed , do you have another preference? <eos>", 
             "<sos> unfortunately i do not have any <v.FOOD> restaurants listed , but i do have <v.NAME> an <v.PRICERANGE> <v.FOOD> restaurant in the city <v.AREA> . <eos>", 
             "<sos> there are no <v.FOOD> restaurants listed. is there something else i can search for? <eos>", 
-            "<sos> unfortunately there are no <v.FOOD> restaurants listed in the <s.AREA> . can i do another search for you? <eos>", 
+            "<sos> unfortunately there are no <v.FOOD> restaurants listed in the <s.AREA> . <eos>", 
             "<sos> there are no <v.FOOD> restaurants listed. <eos>", 
-            "<sos> there is not a <v.FOOD> restaurant listed. may i have you find a different restaurant? <eos>"
+            "<sos> there is not a <v.FOOD> restaurant listed. <eos>"
         ], 
         "152": [
             "<sos> <v.NAME> 's <s.ADDRESS> is <v.ADDRESS> , <s.PHONE> is <v.PHONE> . <eos>", 
@@ -3543,17 +3543,17 @@
             "<sos> <v.NAME> 's <s.ADDRESS> is <v.ADDRESS> , <s.PHONE> <v.PHONE> <eos>"
         ], 
         "155": [
-            "<sos> i have nothing matching your request. would you like to try another <s.AREA> or a different <s.FOOD> ? <eos>", 
+            "<sos> i have nothing matching your request. <eos>", 
             "<sos> there is not matching places that fits your request. can i help you with something else? <eos>", 
             "<sos> there are no restaurants matching your request. would you like to find another restaurant? <eos>", 
             "<sos> there is not a restaurant matching your request. would you like another restaurant? <eos>", 
             "<sos> i am sorry , there is no such restaurant match your request. would you prefer another <s.AREA> or another <s.FOOD> ? <eos>", 
-            "<sos> there are no restaurants matching your request. would you like a different restaurant? <eos>"
+            "<sos> there are no restaurants matching your request. <eos>"
         ], 
         "154": [
             "<sos> i'm sorry i do not have any <v.FOOD> restaurants listed on the <v.AREA> side. should i try <v.FOOD> restaurants in all <s.AREA> s? <eos>", 
             "<sos> i'm sorry , there is not a <v.FOOD> restaurant listed. would you care to try something else? <eos>", 
-            "<sos> i'm sorry , there are no restaurants listed serving <v.FOOD> <s.FOOD> . would you like to try a different <s.FOOD> ? <eos>", 
+            "<sos> i'm sorry , there are no restaurants listed serving <v.FOOD> <s.FOOD> .  <eos>", 
             "<sos> no i'm sorry that's all we have listed in that range. <eos>", 
             "<sos> i'm sorry , there are no restaurants serving <v.FOOD> <s.FOOD> in your <s.PRICERANGE> . would you like to try something else? <eos>", 
             "<sos> i'm sorry , there are no <v.FOOD> restaurants listed in the <v.AREA> <s.AREA> in the <v.PRICERANGE> <s.PRICERANGE> . would you like to try something else? <eos>", 
@@ -3586,7 +3586,7 @@
             "<sos> i don't think there are any <v.FOOD> restaurants in town. <eos>", 
             "<sos> i'm sorry i don't have any <v.FOOD> restaurants in the <v.AREA> . would you like me to search the rest of the city? <eos>", 
             "<sos> i'm sorry. i don't show any results for <v.FOOD> restaurants on the <v.AREA> <s.AREA> . would you like me to search any other <s.AREA> s? <eos>", 
-            "<sos> my apologies. we don't seem to have <v.FOOD> either. can i give you a different type? <eos>", 
+            "<sos> my apologies. we don't seem to have <v.FOOD> either.<eos>", 
             "<sos> i'm sorry , we don't a restaurant that serves <v.FOOD> <s.FOOD> . <eos>", 
             "<sos> you can't go wrong with <v.FOOD> . try <v.NAME> , the <s.ADDRESS> is <v.ADDRESS> <eos>", 
             "<sos> we don't have a listing for an <v.FOOD> resaturant. would you like another <s.FOOD> ? <eos>", 
@@ -3737,7 +3737,7 @@
             "<sos> i'm sorry , there are no <v.FOOD> <s.FOOD> restaurants on the <v.AREA> <s.AREA> . would you like another <s.FOOD> ? <eos>", 
             "<sos> i'm sorry , but there are no restaurants serving <v.FOOD> <s.FOOD> in the <v.AREA> <s.AREA> . <eos>", 
             "<sos> sorry , there are no <v.FOOD> restaurants in that <s.AREA> . <eos>", 
-            "<sos> i'm sorry , there are no restaurants serving <v.FOOD> <s.FOOD> in the <v.AREA> <s.AREA> . would you like a different <s.FOOD> ? <eos>", 
+            "<sos> i'm sorry , there are no restaurants serving <v.FOOD> <s.FOOD> in the <v.AREA> <s.AREA> .<eos>", 
             "<sos> i'm sorry , but i cannot find any restaurant serving <v.FOOD> <s.FOOD> . can i help you find something else ? <eos>", 
             "<sos> i'm sorry but there are no <v.FOOD> restaurants on the <v.AREA> <s.AREA> . is there any other <s.FOOD> that you may be interested in? <eos>", 
             "<sos> i'm sorry , there are no <v.FOOD> restaurants. would you like another <s.FOOD> ? <eos>", 
@@ -3828,10 +3828,10 @@
         ], 
         "147": [
             "<sos> no restaurant matching your description have been found. <eos>", 
-            "<sos> there are no restaurants matching that description. would you like a different <s.FOOD> ? <eos>", 
-            "<sos> there are no restaurants matching those preferences. would you like a different restaurant? <eos>", 
-            "<sos> no restaurants matching your queries have been found. would you like to search for another <s.FOOD> ? <eos>", 
-            "<sos> i'm not finding any restaurants matching that description. would you like to try searching a different <s.AREA> ? <eos>"
+            "<sos> there are no restaurants matching that description. <eos>", 
+            "<sos> there are no restaurants matching those preferences. <eos>", 
+            "<sos> no restaurants matching your queries have been found.  <eos>", 
+            "<sos> i'm not finding any restaurants matching that description. <eos>"
         ], 
         "144": [
         ], 
@@ -3883,7 +3883,7 @@
         "141": [
             "<sos> i have no results for that inquiry. is there something else i can try? <eos>", 
             "<sos> there is no <v.FOOD> restaurant in the <v.AREA> . do you want to try something else ? <eos>", 
-            "<sos> sorry , but there are no <v.FOOD> restaurants in the <s.AREA> , did you want to try a different type of restaurant? <eos>", 
+            "<sos> sorry , but there are no <v.FOOD> restaurants in the <s.AREA> <eos>", 
             "<sos> sorry but there are no <v.FOOD> restaurants. do you want to try another <s.FOOD> ? <eos>"
         ], 
         "148": [
@@ -3977,7 +3977,7 @@
             "<sos> there are no matching records found for that request <eos>", 
             "<sos> there are no matching records found for that request. <eos>", 
             "<sos> there are no matching records founds. <eos>", 
-            "<sos> there are no records matching your criteria. would you like a different <s.FOOD> or <s.AREA> ? <eos>", 
+            "<sos> there are no records matching your criteria.<eos>", 
             "<sos> there are no <v.PRICERANGE> <v.FOOD> restaurants in our records. <eos>", 
             "<sos> no matching records <eos>", 
             "<sos> no matching records found <eos>", 
@@ -4051,19 +4051,19 @@
             "<sos> the <s.ADDRESS> for <v.NAME> is <v.ADDRESS> , and the <s.PHONE> is <v.PHONE> . is there anything else i can help you with? <eos>"
         ], 
         "41": [
-            "<sos> i cannot find any restaurants serving <v.FOOD> <s.FOOD> . would you like something different? <eos>", 
-            "<sos> there are no <v.FOOD> restaurants. would you like something different? <eos>", 
-            "<sos> no restaurants serving <v.FOOD> <s.FOOD> are located in the <v.AREA> <s.AREA> . would you like me to check for a different <s.AREA> or <s.FOOD> ? <eos>", 
-            "<sos> sorry , there are no restaurants serving <v.FOOD> <s.FOOD> available. may i help you find a different sort of <s.FOOD> ? <eos>", 
-            "<sos> there are no <v.FOOD> restaurants. would you like to choose another <s.FOOD> ? <eos>", 
-            "<sos> there are no <v.PRICERANGE> <v.FOOD> restaurants. would you prefer a different <s.FOOD> or <s.PRICERANGE> ? <eos>", 
-            "<sos> there are no <v.FOOD> restaurants in the <v.PRICERANGE> <s.PRICERANGE> . would you like me to check for restaurants serving a different <s.FOOD> ? <eos>", 
-            "<sos> no results were returned. would you like me to check a different <s.FOOD> , or another <s.AREA> ? <eos>", 
-            "<sos> i apologize , there are no restaurants in the <v.AREA> <s.AREA> that serve <v.FOOD> <s.FOOD> . would you like to choose a different <s.AREA> or <s.FOOD> ? <eos>", 
-            "<sos> we do not have any <v.FOOD> restaurants. would you like to find another <s.FOOD> ? <eos>", 
-            "<sos> i have found no restaurants serving <v.FOOD> <s.FOOD> in the <v.PRICERANGE> <s.PRICERANGE> . would you like a different <s.FOOD> ? <eos>", 
-            "<sos> there is not a restaurant serving <v.FOOD> <s.FOOD> . would you like a different type <s.FOOD> ? <eos>", 
-            "<sos> i am sorry there are no restaurants with <v.FOOD> . is there some other <s.FOOD> you would like? <eos>"
+            "<sos> i cannot find any restaurants serving <v.FOOD> <s.FOOD> . <eos>", 
+            "<sos> there are no <v.FOOD> restaurants. <eos>", 
+            "<sos> no restaurants serving <v.FOOD> <s.FOOD> are located in the <v.AREA> <s.AREA> . <eos>", 
+            "<sos> sorry , there are no restaurants serving <v.FOOD> <s.FOOD> available. <eos>", 
+            "<sos> there are no <v.FOOD> restaurants.  <eos>", 
+            "<sos> there are no <v.PRICERANGE> <v.FOOD> restaurants. <eos>", 
+            "<sos> there are no <v.FOOD> restaurants in the <v.PRICERANGE> <s.PRICERANGE> . <eos>", 
+            "<sos> no results were returned. <eos>", 
+            "<sos> i apologize , there are no restaurants in the <v.AREA> <s.AREA> that serve <v.FOOD> <s.FOOD> . <eos>", 
+            "<sos> we do not have any <v.FOOD> restaurants. <eos>", 
+            "<sos> i have found no restaurants serving <v.FOOD> <s.FOOD> in the <v.PRICERANGE> <s.PRICERANGE> . <eos>", 
+            "<sos> there is not a restaurant serving <v.FOOD> <s.FOOD> . <eos>", 
+            "<sos> i am sorry there are no restaurants with <v.FOOD> . <eos>"
         ], 
         "47": [
             "<sos> still there? <eos>", 

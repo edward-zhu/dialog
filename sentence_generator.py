@@ -23,6 +23,7 @@ class SentenceGenerator:
             "122":"137",
             "123":"137",
             "124":"137",
+            "126":"41",
             "194":"137",
             "197":"137",
             "196":"137",
@@ -64,6 +65,11 @@ class SentenceGenerator:
             # "14":"137",
             "17":"137",
             "152":"137",
+            "158":"41",
+            "78":"41",
+            "148":"137",
+            "144":"137",
+
         }
 
     def generate(self, states_pred_dict, sent_type):
@@ -150,6 +156,8 @@ class SentenceGenerator:
                 sentence = sentence + "postcode "
             elif original_word.startswith("<s.PRICERANGE>"):
                 sentence = sentence + "pricerange "
+            elif original_word == "ly":
+                sentence = sentence.strip() + "ly "
             else:
                 sentence = sentence + original_word + " "
         return sentence
