@@ -8,15 +8,17 @@
     "sys_vocab" : "data/sys_vocab.json",
     "ontology": "data/CamRestOTGY.json",
 
-    "tracker_model": "models/tracker_3301.model",
+    "tracker_model": "models/tracker_4201.model",
+
+    "use_pretrained_embedding" : true,
 
     "generate_embed" : false,
     "paragram_file" : "data/paragram_300_sl999.txt",
 
-    "kb_indicator_len" : 7,
+    "kb_indicator_len" : 3,
 
     "sentvec_size": 300,
-    "state_tracker_hidden_size" : 200,
+    "state_tracker_hidden_size" : 300,
     "cond_size" : 350,
     "generator_hidden_size" : 300,
     "teacher_forcing_ratio" : 0.5,
