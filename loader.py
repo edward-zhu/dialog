@@ -350,11 +350,9 @@ def load_data(**kargs):
 
     onto, onto_idx = load_ontology(kargs["ontology"])
 
-    kb_found_len = kargs["kb_indicator_len"] - 1
-
-    return DataLoader(diags_train, word2idx, sys_word2idx, onto, onto_idx, kb_fonud_len=kb_found_len, \
-            DataLoader(diags_val, word2idx, sys_word2idx, onto, onto_idx, kb_fonud_len=kb_found_len, mode='test'), \
-            DataLoader(diags_test, word2idx, sys_word2idx, onto, onto_idx, kb_fonud_len=kb_found_len, mode='test'), embed, sys_vocab
+    return DataLoader(diags_train, word2idx, sys_word2idx, onto, onto_idx), \
+            DataLoader(diags_val, word2idx, sys_word2idx, onto, onto_idx, mode='test'), \
+            DataLoader(diags_test, word2idx, sys_word2idx, onto, onto_idx, mode='test'), embed, sys_vocab
 
 
 if __name__ == '__main__':

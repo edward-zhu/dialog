@@ -1,7 +1,6 @@
 import json
 
 import torch
-import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable
 from torch.optim import RMSprop
@@ -18,7 +17,7 @@ sent_groups = {}
 
 def print_ret(utts, utts_seq, states_pred, states_gt):
     for i, utt in enumerate(utts):
-        # print utt
+        print utt
         # print utts_seq[i]
         for slot in states_pred:
             _, argmax = states_pred[slot].data[0][i].max(0)
@@ -57,18 +56,12 @@ def main():
 
     tloader, vloader, _, embed, _ = load_data(**conf)
 
-    if not conf["use_pretrained_embedding"]:
-        embed = nn.Embedding(embed.num_embeddings, embed.embedding_dim)
-        print "use new embedding..."
-
     model, slot_loss, _ = gen_tracker_model_and_loss(tloader.onto, embed, conf)
 
     optimizer = RMSprop(model.parameters(), lr=conf["lr"])
     scheduler = StepLR(optimizer, step_size=100, gamma=0.99)
 
     print model
-
-    # exit()
 
     global best_acc, best_ep, no_improve
 
@@ -97,7 +90,7 @@ def main():
         # print(states_pred)
 
         loss = slot_loss(states_pred, states_gt)
-        loss += F.cross_entropy(sent_grp_pred[:, :-1, :].view(-1, 200), sys_utt_grp_gt) * 0.2
+        loss += F.cross_entropy(sent_grp_pred[:, :-1, :].view(-1, 200), sys_utt_grp_gt)
 
         if ep % 100 == 0:
             c, cnt = evaluate(utts, usr_utts, states_pred, states_gt, sent_grp_pred[:, :-1, :], sys_utt_grp_gt)
@@ -143,7 +136,7 @@ def main():
         else:
             no_improve += 1
 
-        print 'epoch %d: val correct %d / %d (%.4f) best %.4f (epoch %d)' % (ep, correct, count, acc, best_acc, best_ep, )
+        print 'epoch %d: val correct %d / %d (%.4f) best %.4f' % (ep, correct, count, acc, best_acc, )
         
 
     for ep in range(conf["epoch"]):

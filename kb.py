@@ -42,13 +42,10 @@ class KnowledgeBase:
 
     def search_multi(self, kvs):
         '''multi-key search'''
-        ret = reduce(lambda y, x: y & set(self.index[x[0]][x[1]]) 
-                        if y is not None else set(self.index[x[0]][x[1]]), kvs, None)
-        return ret if ret is not None else set()
+        return reduce(lambda y, x: y & set(self.index[x[0]][x[1]]) 
+                        if len(y) > 0  else y | set(self.index[x[0]][x[1]]), kvs, set())
 
 if __name__ == '__main__':
     kb = load_kb("data/CamRest.json", "name")
 
-    print kb.index['food']['cheap']
-
-    print kb.search_multi([[u'food', u'swedish'], [u'pricerange', u'cheap']])
+    print kb.search_multi([[u'pricerange', u'cheap'], [u'area', u'east']])
