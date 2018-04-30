@@ -9,7 +9,61 @@ class SentenceGenerator:
         self.onto = onto
         self.sent_groups = sent_groups
         self.sent_type_mapping = {
-            # TODO
+            "132":"137",
+            "136":"137",
+            "138":"137",
+            "24":"41",
+            "20":"137",
+            "161":"41",
+            # "27":"137",
+            "21":"41",
+            "8":"137",
+            "96":"41",
+            "120":"41",
+            "122":"137",
+            "123":"137",
+            "124":"137",
+            "194":"137",
+            "197":"137",
+            "196":"137",
+            "191":"137",
+            "193":"137",
+            "115":"137",
+            "117":"137",
+            "116":"137",
+            "111":"41",
+            "110":"41", # An interesting group ...
+            "176":"137", # Another interesting group
+            "82":"137",
+            "86":"137",
+            "118":"137",
+            "178":"137",
+            "108":"137",
+            "109":"137",
+            "103":"137",
+            "100":"137",
+            "30":"137",
+            "37":"41",
+            "35":"137",
+            # "34":"137",
+            "60":"137",
+            "65":"137",
+            "68":"137",
+            "175":"137",
+            "173":"137",
+            "171":"137",
+            "170":"137",
+            "182":"137",
+            "183":"137",
+            "180":"137",
+            "181":"137",
+            "6":"137",
+            "99":"137",
+            "163":"137",
+            "15":"137",
+            # "14":"137",
+            "17":"137",
+            "152":"137",
         }
 
     def generate(self, states_pred_dict, sent_type):
@@ -17,9 +71,22 @@ class SentenceGenerator:
         sentence = ""
         # possible search fields: area, food, and pricerange
         search_query = []
+        search_result = []
         selected_search_result = ""
+        print sent_type
+        if sent_type in self.sent_type_mapping.keys():
+            sent_type = self.sent_type_mapping[sent_type]
+        print sent_type
         original_sent = random.choice(self.sent_groups[sent_type])
         original_words = original_sent.split(" ")
+
+        for key, value in states_pred_dict.items():
+            if key == "food":
+                record_food_type = self.onto.get(key)[value[0] - 1]
+            if key == "area":
+                record_area_type = self.onto.get(key)[value[0] - 1]
+            if key == "pricerange":
+                record_pricerange_type = self.onto.get(key)[value[0] - 1]
 
         if self.last_states_pred_dict is not None \
                 and self.last_states_pred_dict is not None \
@@ -32,25 +99,32 @@ class SentenceGenerator:
                 if not key.endswith("_req") and value[0] != 0:
                     search_query.append([key, self.onto.get(key)[value[0] - 1]])
             search_result = list(self.kb.search_multi(search_query))
+            print search_query
+            print search_result
             if len(search_result) != 0:
-                selected_search_result = search_result[0]
+                search_result_length = len(search_result)
+                selected_search_result = search_result[random.randint(0,search_result_length - 1)]
                 self.last_states_pred_dict = states_pred_dict
                 self.last_selected_search_result = selected_search_result
+                print self.kb.get(selected_search_result)
             elif len(search_result) == 0:
                 self.last_selected_search_result = None
                 self.last_selected_search_result = None
                 original_sent = random.choice(self.sent_groups[str(int(41))])
                 original_words = original_sent.split(" ")
-            print search_query
-            print search_result
-            print self.kb.get(selected_search_result)
         for original_word in original_words:
             if original_word.startswith("<v.ADDRESS>"):
                 sentence = sentence + self.kb.get(selected_search_result).get('address') + " "
             elif original_word.startswith("<v.AREA>"):
-                sentence = sentence + self.kb.get(selected_search_result).get('area') + " "
+                if len(search_result) == 0:
+                    sentence = sentence + record_area_type + " "
+                else:
+                    sentence = sentence + self.kb.get(selected_search_result).get('area') + " "
             elif original_word.startswith("<v.FOOD>"):
-                sentence = sentence + self.kb.get(selected_search_result).get('food') + " "
+                if len(search_result) == 0:
+                    sentence = sentence + record_food_type + " "
+                else:
+                    sentence = sentence + self.kb.get(selected_search_result).get('food') + " "
             elif original_word.startswith("<v.NAME>"):
                 sentence = sentence + self.kb.get(selected_search_result).get('name') + " "
             elif original_word.startswith("<v.PHONE>"):
@@ -58,7 +132,10 @@ class SentenceGenerator:
             elif original_word.startswith("<v.POSTCODE>"):
                 sentence = sentence + self.kb.get(selected_search_result).get('postcode') + " "
             elif original_word.startswith("<v.PRICERANGE>"):
-                sentence = sentence + self.kb.get(selected_search_result).get('pricerange') + " "
+                if len(search_result) == 0:
+                    sentence = sentence + record_pricerange_type + " "
+                else:
+                    sentence = sentence + self.kb.get(selected_search_result).get('pricerange') + " "
             elif original_word.startswith("<s.ADDRESS>"):
                 sentence = sentence + "address "
             elif original_word.startswith("<s.AREA>"):
