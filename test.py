@@ -21,10 +21,10 @@ CONFIG_FN = 'config.json'
 
 sent_groups = {}
 
-def print_ret(states_pred, sent_groups_pred):
+def print_ret(states_pred, sent_groups_pred, onto):
     for slot in states_pred:
         _, argmax = states_pred[slot].data[0][0].max(0)
-        print '%s pred: %d' % (slot, argmax, )
+        print '%s pred: %d (%s)' % (slot, int(argmax), onto[slot][int(argmax) - 1], )
 
     maxs, argmaxs = sent_groups_pred.data[0][0].topk(3)
 
@@ -91,7 +91,7 @@ def main():
         sentvecs = sentvecs.view(1, -1)
         states_reps = states_reps.view(1, -1)
 
-        print_ret(states_preds, sent_grp_preds)
+        print_ret(states_preds, sent_grp_preds, onto)
 
 if __name__ == '__main__':
     main()
