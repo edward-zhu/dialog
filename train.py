@@ -39,7 +39,7 @@ def evaluate(utts, utts_seq, states_pred, states_gt, sent_groups_pred, sent_grou
             break
 
         print utt
-        _, argmax = sent_groups_pred.data[0][i].max(0)
+        _, argmax = sent_groups_pred.data[i].max(0)
         print 'sys utt pred: (%d)' % (int(argmax)) + sent_groups[str(int(argmax))][0]
         if sent_groups_gt is not None:
             print 'sys utt gt  (%d): ' % (int(sent_groups_gt[i])) + sent_groups[str(int(sent_groups_gt[i]))][0]
@@ -61,7 +61,9 @@ def main():
         embed = nn.Embedding(embed.num_embeddings, embed.embedding_dim)
         print "use new embedding..."
 
-    model, slot_loss, _ = gen_tracker_model_and_loss(tloader.onto, embed, conf)
+    kb = load_kb(conf["kb"], 'name')
+
+    model, slot_loss, _ = gen_tracker_model_and_loss(tloader.onto, embed, conf, kb)
 
     optimizer = RMSprop(model.parameters(), lr=conf["lr"])
     scheduler = StepLR(optimizer, step_size=100, gamma=0.99)
@@ -97,10 +99,10 @@ def main():
         # print(states_pred)
 
         loss = slot_loss(states_pred, states_gt)
-        loss += F.cross_entropy(sent_grp_pred[:, :-1, :].view(-1, 200), sys_utt_grp_gt) * 0.2
+        loss += F.cross_entropy(sent_grp_pred[:-1, :].view(-1, 200), sys_utt_grp_gt) * 0.2
 
         if ep % 100 == 0:
-            c, cnt = evaluate(utts, usr_utts, states_pred, states_gt, sent_grp_pred[:, :-1, :], sys_utt_grp_gt)
+            c, cnt = evaluate(utts, usr_utts, states_pred, states_gt, sent_grp_pred[:-1, :], sys_utt_grp_gt)
             print "    epoch %d: %.6f correct %d / %d (%.4f)" % (ep, loss / float(len(utts)), c, cnt, c / float(cnt))
 
         loss.backward()
@@ -126,7 +128,7 @@ def main():
             states_gt = { slot : Variable(v) for slot, v in states_gt.iteritems() }
 
             _, states_reps, states_pred, _, sent_grp_pred = model(usr_utts, kb_found, model.state_tracker.init_hidden())
-            c, cnt = evaluate(utts, usr_utts, states_pred, states_gt, sent_grp_pred[:, :-1, :])
+            c, cnt = evaluate(utts, usr_utts, states_pred, states_gt, sent_grp_pred[:-1, :])
             correct += c
             count += cnt
 

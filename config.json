@@ -8,7 +8,7 @@
     "sys_vocab" : "data/sys_vocab.json",
     "ontology": "data/CamRestOTGY.json",
 
-    "tracker_model": "models/tracker_4201.model",
+    "tracker_model": "models/tracker_4601.model",
 
     "use_pretrained_embedding" : true,
 

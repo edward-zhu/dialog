@@ -30,7 +30,7 @@ def print_ret(states_pred, sent_groups_pred, onto, sentence_generator):
         states_pred_dict[slot] = argmax
         print '%s pred: %d (%s)' % (slot, int(argmax), onto[slot][int(argmax) - 1], )
 
-    maxs, argmaxs = sent_groups_pred.data[0][0].topk(1)
+    maxs, argmaxs = sent_groups_pred.data[0].topk(1)
 
     for i, argmax in enumerate(argmaxs):
         # print 'sys utt pred: (%d, %.2f)' % (argmax, maxs[i]) + random.choice(sent_groups[str(int(argmax))])
@@ -74,7 +74,7 @@ def main():
 
     usr_codec = Codec([], word2idx)
 
-    trk_model, slot_len_sum = load_tracker_model(onto, embed, conf)
+    trk_model, slot_len_sum = load_tracker_model(onto, embed, conf, kb)
 
     trk_model.eval()
 
@@ -88,7 +88,7 @@ def main():
 
         inp = Variable(torch.LongTensor([ inp, ]))
 
-        sentvecs, states_reps, states_preds, hidden, sent_grp_preds = trk_model(inp, kb_vec, hidden)
+        sentvecs, states_reps, states_preds, hidden, sent_grp_preds = trk_model(inp, None, hidden)
 
         criteria = to_search_criteria(states_preds, onto)
         ret, kb_vec = get_kb_result(kb, criteria, conf["kb_indicator_len"])
