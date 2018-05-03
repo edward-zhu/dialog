@@ -84,10 +84,13 @@ class Model(nn.Module):
         # register slot trackers
         self.slot_trackers_list = nn.ModuleList(self.slot_trackers.values())
 
-        self.sent_group_fc = nn.Linear(self.state_tracker_hidden_size + conf["kb_indicator_len"], self.sent_group_size)
+        self.sent_group_fc = nn.Linear(self.state_tracker_hidden_size + conf["kb_indicator_len"], self.state_tracker_hidden_size)
+
+        self.sent_group_fc2 = nn.Linear(self.state_tracker_hidden_size, self.sent_group_size)
 
 
         self.kb_indicator_len = conf["kb_indicator_len"]
+
 
         self.kb = kb
 
@@ -116,7 +119,7 @@ class Model(nn.Module):
 
         statereps_kb_found = torch.cat((state_reps.squeeze(0), kb_found.float()), dim=1)
 
-        sent_group_pred = self.sent_group_fc(statereps_kb_found)
+        sent_group_pred = self.sent_group_fc2(F.relu(self.sent_group_fc(statereps_kb_found)))
 
         return sentvecs, state_reps, state_pred, hidden, sent_group_pred
 

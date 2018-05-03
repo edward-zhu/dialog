@@ -40,9 +40,10 @@ def evaluate(utts, utts_seq, states_pred, states_gt, sent_groups_pred, sent_grou
 
         print utt
         _, argmax = sent_groups_pred.data[i].max(0)
-        print 'sys utt pred: (%d)' % (int(argmax)) + sent_groups[str(int(argmax))][0]
+
+        print 'sys utt pred: (%d)' % (int(argmax)) + (sent_groups.get(str(int(argmax))) + ["None"])[0]
         if sent_groups_gt is not None:
-            print 'sys utt gt  (%d): ' % (int(sent_groups_gt[i])) + sent_groups[str(int(sent_groups_gt[i]))][0]
+            print 'sys utt gt  (%d): ' % (int(sent_groups_gt[i])) + (sent_groups.get(str(int(sent_groups_gt[i]))) + ["None"])[0]
 
     return correct, count
 
