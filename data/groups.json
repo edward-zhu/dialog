@@ -2127,10 +2127,7 @@
             "<sos> the <s.ADDRESS> is <v.ADDRESS> city <v.AREA> <eos>", 
             "<sos> the <v.NAME> is located at <v.ADDRESS> city. <eos>", 
             "<sos> there is <v.NAME> in city <v.AREA> <eos>", 
-            "<sos> there is <v.NAME> at <v.ADDRESS> , city <v.AREA> , and <v.NAME> on <v.ADDRESS> , also city <v.AREA> . is there anything else i can do for you? <eos>", 
-            "<sos> <v.NAME> is at <v.ADDRESS> , city <v.AREA> and <v.NAME> is at <v.ADDRESS> , city <v.AREA> <eos>", 
-            "<sos> <v.NAME> is a <v.FOOD> at <v.ADDRESS> city <v.AREA> , <s.POSTCODE> <v.POSTCODE> thank you! <eos>", 
-            "<sos> there's <v.NAME> <s.PHONE> <v.PHONE> at <v.ADDRESS> , city <v.AREA> . <v.NAME> , <v.PHONE> at <v.ADDRESS> , city <v.AREA> . <v.NAME> , <v.PHONE> at <v.ADDRESS> , city <v.AREA> . and <v.NAME> , <v.PHONE> , <v.ADDRESS>. i can repeat those if you need me to. <eos>"
+            "<sos> <v.NAME> is a <v.FOOD> at <v.ADDRESS> city <v.AREA> , <s.POSTCODE> <v.POSTCODE> thank you! <eos>"
         ], 
         "95": [
             "<sos> thank you , and have a great day! <eos>", 
@@ -2373,12 +2370,9 @@
         ], 
         "58": [
             "<sos> yes , the <s.PHONE> is <v.PHONE> . the <s.ADDRESS> is <v.ADDRESS> . anything else? <eos>", 
-            "<sos> yes. is there anything else i can help you find? <eos>", 
             "<sos> yes , it's <v.PHONE> . would you like any other information? <eos>", 
-            "<sos> yes , it is. anything else? <eos>", 
             "<sos> yes the <s.PHONE> for <v.NAME> is <v.PHONE> <eos>", 
             "<sos> yes , the <s.PHONE> is <v.PHONE> is there anything else i can help you with? <eos>", 
-            "<sos> yes , there are several. what <s.AREA> ? <eos>", 
             "<sos> yes , the <s.PHONE> is <v.PHONE> <eos>", 
             "<sos> yes , <v.PHONE> <eos>"
         ], 
@@ -2444,8 +2438,7 @@
             "<sos> there are none , sorry. anything else i can search for you? <eos>", 
             "<sos> i'm sorry , we do not have any <v.FOOD> restaurants in your <s.AREA> . would you like for me to search for another <s.FOOD> ? <v.FOOD> , perhaps? <eos>", 
             "<sos> sorry , there is no <v.FOOD> restaurant in the <v.AREA> <s.AREA> . would you like something else? <eos>", 
-            "<sos> no <v.FOOD> <s.FOOD> , but i do have the <v.FOOD> restaurant <v.NAME> at <v.ADDRESS> , <v.POSTCODE> , tel. <v.PHONE> <eos>", 
-            "<sos> no , but <v.NAME> which is <v.FOOD> and <v.NAME> which is are. would you like one of those <s.ADDRESS> es? <eos>"
+            "<sos> no <v.FOOD> <s.FOOD> <eos>"
         ], 
         "51": [
             "<sos> i'm sorry! i don't know of any <v.FOOD> restaurants. <eos>", 
@@ -2549,18 +2542,7 @@
             "<sos> i have two restaurants that meet your requirements. do you have a <s.FOOD> preference? <eos>"
         ], 
         "192": [
-            "<sos> you're welcome. may i help with another query? <eos>", 
-            "<sos> you are welcome. can i help with anything else? <eos>", 
-            "<sos> you're welcome , is there anything else i can help you with? <eos>", 
-            "<sos> you're welcome. is there anything else i can help with? <eos>", 
-            "<sos> you're welcome. is there anything else i can help you with? <eos>", 
-            "<sos> you are welcome. is there anything else i can help you with? <eos>", 
-            "<sos> your welcome , is there anything i could help you with? <eos>", 
-            "<sos> you're welcome. is there anything else i can help you with today? <eos>", 
-            "<sos> you are welcome. is there anything else we can help you with today? <eos>", 
-            "<sos> you're welcome. is there anything else i can help you with? <eos>", 
-            "<sos> your welcome. their <s.ADDRESS> is <v.ADDRESS> and they are in the <v.PRICERANGE> <s.PRICERANGE> and on the <v.AREA> <s.AREA> . can i help you with anything else? <eos>", 
-            "<sos> you're welcome. anything else i can help you with? <eos>"
+            "<sos> you're welcome. <eos>"
         ], 
         "115": [
             "<sos> <v.NAME> and <v.NAME> are your choices. <eos>" 
@@ -3347,13 +3329,13 @@
         ], 
         "10": [
             "<sos> <v.NAME> is a <v.FOOD> restaurant in the <v.AREA> <s.AREA> . <eos>", 
-            "<sos> <v.NAME> is a <v.FOOD> restaurant in the <v.AREA> <s.AREA> . would you like their <s.PHONE> ? <eos>", 
-            "<sos> <v.NAME> is an <v.FOOD> restaurant in the <v.AREA> <s.AREA> . would you like their <s.AREA> ? <eos>", 
+            "<sos> <v.NAME> is a <v.FOOD> restaurant in the <v.AREA> <s.AREA> . would you like their <s.ADDRESS> and <s.PHONE> ? <eos>", 
+            "<sos> <v.NAME> is an <v.FOOD> restaurant in the <v.AREA> <s.AREA> . would you like their <s.ADDRESS> and <s.PHONE> ? <eos>", 
             "<sos> <v.NAME> is a <v.FOOD> restaurant in the <v.AREA> <s.AREA> . <eos>", 
             "<sos> the only <v.FOOD> restaurant in the <v.AREA> <s.AREA> is <v.NAME> . <eos>", 
             "<sos> <v.NAME> is a <v.FOOD> restaurant in the <v.AREA> <s.AREA> . <eos>", 
-            "<sos> <v.NAME> is an <v.FOOD> restaurant in the <v.AREA> <s.AREA> . would you like their <s.AREA> ? <eos>", 
-            "<sos> <v.NAME> is a <v.FOOD> restaurant in the <v.AREA> <s.AREA> . would you like their <s.AREA> ? <eos>", 
+            "<sos> <v.NAME> is an <v.FOOD> restaurant in the <v.AREA> <s.AREA> . would you like their <s.ADDRESS> and <s.PHONE> ? <eos>", 
+            "<sos> <v.NAME> is a <v.FOOD> restaurant in the <v.AREA> <s.AREA> . would you like their <s.ADDRESS> and <s.PHONE> ? <eos>", 
             "<sos> <v.NAME> is a <v.FOOD> restaurant in the <v.AREA> <s.AREA> . <eos>", 
             "<sos> of course , how about <v.NAME> ? it is a <v.FOOD> restaurant in the <v.AREA> <s.AREA> . <eos>"
         ], 
@@ -3688,17 +3670,7 @@
             "<sos> do you have a preference on the price? <eos>" 
         ], 
         "42": [
-            "<sos> thank you! please let me know if there is anything else i can assist you with! <eos>", 
-            "<sos> thank you! please let me know if there is anything else i can assist you with! <eos>", 
-            "<sos> i'm glad i could be of assistance! <eos>", 
-            "<sos> you should go to <v.NAME> ! <eos>", 
-            "<sos> you should go to <v.NAME> ! <eos>", 
-            "<sos> is there any <s.AREA> you prefer! <eos>", 
-            "<sos> great! <v.NAME> and <v.NAME> are both <v.PRICERANGE> and located in the <v.AREA> <s.AREA> . <eos>", 
-            "<sos> yes! i have found <v.NAME> . <s.PHONE> <v.PHONE> <eos>", 
-            "<sos> hi! <v.NAME> is an excellent <v.PRICERANGE> <v.FOOD> in the <v.AREA> <s.AREA> . their <s.PHONE> is <v.PHONE> , anything else? <eos>", 
-            "<sos> my pleasure! is there anything else i can do for you? <eos>", 
-            "<sos> i will find that for you ! <eos>"
+            "<sos> you should go to <v.NAME> ! <eos>"
         ], 
         "43": [
             "<sos> is there a specific <s.PRICERANGE> you are looking for? <eos>", 
@@ -3960,15 +3932,12 @@
             "<sos> <v.NAME> is a <v.PRICERANGE> <v.FOOD> restaurant in the cambridge <s.AREA> <eos>", 
             "<sos> <v.NAME> is a <v.PRICERANGE> <v.FOOD> restaurant in the <v.AREA> <s.AREA> . <eos>", 
             "<sos> <v.NAME> is a <v.PRICERANGE> <v.FOOD> restaurant in the <v.AREA> . <eos>", 
-            "<sos> is this the only <v.PRICERANGE> restaurant on the <v.AREA> <s.AREA> ? <eos>", 
             "<sos> <v.NAME> is a <v.PRICERANGE> restaurant in the <v.AREA> . <eos>", 
             "<sos> <v.NAME> is an <v.PRICERANGE> restaurant on the <v.AREA> <s.AREA> . <eos>", 
             "<sos> <v.NAME> is a <v.PRICERANGE> <v.FOOD> restaurant located in the <v.AREA> <s.AREA> . <eos>", 
-            "<sos> <v.NAME> is a <v.FOOD> restaurant in the <v.AREA> <s.AREA> and is <v.PRICERANGE> . <eos>", 
-            "<sos> the <v.NAME> and <v.NAME> <v.FOOD> restaurant are <v.PRICERANGE> and in your desired <s.AREA> . <eos>", 
+            "<sos> <v.NAME> is a <v.FOOD> restaurant in the <v.AREA> <s.AREA> and is <v.PRICERANGE> . <eos>",
             "<sos> <v.NAME> is an <v.PRICERANGE> <v.FOOD> restaurant in the <v.AREA> <s.AREA> . <eos>", 
-            "<sos> there is a fairly <v.PRICERANGE> <v.FOOD> restaurant <s.NAME> d <v.NAME> in the <v.AREA> <s.AREA> . <eos>", 
-            "<sos> there is one <s.AREA> that servies <v.FOOD> <s.FOOD> . it is and <v.PRICERANGE> restaurant in the <v.AREA> <s.AREA> . <eos>", 
+            "<sos> there is a fairly <v.PRICERANGE> <v.FOOD> restaurant <s.NAME>d <v.NAME> in the <v.AREA> <s.AREA> . <eos>",
             "<sos> <v.NAME> is an <v.PRICERANGE> restaurant in the <v.AREA> <s.AREA> . <eos>", 
             "<sos> <v.NAME> is a <v.PRICERANGE> restaurant in the <v.AREA> <s.AREA> . <eos>"
         ], 

@@ -69,7 +69,8 @@ class SentenceGenerator:
             "78":"41",
             "148":"137",
             "144":"137",
-
+            "47":"192",
+            "112":"150"
         }
 
     def generate(self, states_pred_dict, sent_type):
@@ -113,8 +114,15 @@ class SentenceGenerator:
                 self.last_states_pred_dict = states_pred_dict
                 self.last_selected_search_result = selected_search_result
                 print self.kb.get(selected_search_result)
+                # has results but the sent_type is 119
+                # mapping 119 -> 137
+                if sent_type == "119":
+                    sent_type = "137"
+                    print sent_type
+                    original_sent = random.choice(self.sent_groups[sent_type])
+                    original_words = original_sent.split(" ")
             elif len(search_result) == 0:
-                self.last_selected_search_result = None
+                self.last_states_pred_dict = None
                 self.last_selected_search_result = None
                 original_sent = random.choice(self.sent_groups[str(int(41))])
                 original_words = original_sent.split(" ")
@@ -122,12 +130,12 @@ class SentenceGenerator:
             if original_word.startswith("<v.ADDRESS>"):
                 sentence = sentence + self.kb.get(selected_search_result).get('address') + " "
             elif original_word.startswith("<v.AREA>"):
-                if len(search_result) == 0:
+                if len(search_result) == 0 and self.last_states_pred_dict is None:
                     sentence = sentence + record_area_type + " "
                 else:
                     sentence = sentence + self.kb.get(selected_search_result).get('area') + " "
             elif original_word.startswith("<v.FOOD>"):
-                if len(search_result) == 0:
+                if len(search_result) == 0 and self.last_states_pred_dict is None:
                     sentence = sentence + record_food_type + " "
                 else:
                     sentence = sentence + self.kb.get(selected_search_result).get('food') + " "
