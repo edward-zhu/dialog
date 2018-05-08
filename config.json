@@ -10,12 +10,13 @@
 
     "tracker_model": "models/tracker_4201.model",
 
-    "use_pretrained_embedding" : true,
+    "use_pretrained_embedding" : false,
 
     "generate_embed" : false,
     "paragram_file" : "data/paragram_300_sl999.txt",
 
     "kb_indicator_len" : 3,
+    "attention" : false,
 
     "sentvec_size": 300,
     "state_tracker_hidden_size" : 300,

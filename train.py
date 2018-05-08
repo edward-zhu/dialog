@@ -56,7 +56,7 @@ def main():
     with open(conf["sent_groups"]) as f:
         sent_groups = json.load(f)["groups"]
 
-    tloader, vloader, _, embed, _ = load_data(**conf)
+    tloader, vloader, testloader, embed, _ = load_data(**conf)
 
     if not conf["use_pretrained_embedding"]:
         embed = nn.Embedding(embed.num_embeddings, embed.embedding_dim)
@@ -148,6 +148,24 @@ def main():
 
         print 'epoch %d: val correct %d / %d (%.4f) best %.4f (epoch %d)' % (ep, correct, count, acc, best_acc, best_ep, )
         
+    def test():
+        correct = 0
+        count = 0
+
+        for utts, _, usr_utts, _, states_gt, kb_found, sys_utt_grp_gt in testloader:
+            usr_utts = Variable(usr_utts)
+            kb_found = Variable(kb_found)
+
+            states_gt = { slot : Variable(v) for slot, v in states_gt.iteritems() }
+
+            _, states_reps, states_pred, _, sent_grp_pred = model(usr_utts, kb_found, model.state_tracker.init_hidden())
+            c, cnt = evaluate(utts, usr_utts, states_pred, states_gt, sent_grp_pred[:-1, :])
+            correct += c
+            count += cnt
+
+        acc = correct / float(count)
+
+        print '-- test correct %d / %d (%.4f) ' % (correct, count, acc, )
 
     for ep in range(conf["epoch"]):
         scheduler.step()
@@ -157,6 +175,7 @@ def main():
 
         if no_improve > conf["early_stopping"]:
             print "-> no improve > 10 times exit."
+            test()
             exit()
 
 if __name__ == '__main__':

@@ -72,7 +72,7 @@ class Model(nn.Module):
         self.sent_group_size = conf["sent_group_size"]
 
         # sentvec_size = hidden * 2 * output_dim
-        self.encoder = SentenceEncoder(embed, conf["vocab_dim"], self.sentvec_size / 2, 1)
+        self.encoder = SentenceEncoder(embed, conf["vocab_dim"], self.sentvec_size / 2, 1, conf["attention"])
 
         # input = sentvec (sentvec_size) + kb_found (1)
         self.state_tracker = StateTracker(self.sentvec_size, self.state_tracker_hidden_size)
