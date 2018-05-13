@@ -8,9 +8,9 @@
     "sys_vocab" : "data/sys_vocab.json",
     "ontology": "data/CamRestOTGY.json",
 
-    "tracker_model": "models/tracker_4201.model",
+    "tracker_model": "models/tracker_5401.model",
 
-    "use_pretrained_embedding" : false,
+    "use_pretrained_embedding" : true,
 
     "generate_embed" : false,
     "paragram_file" : "data/paragram_300_sl999.txt",
