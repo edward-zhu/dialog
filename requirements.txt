@@ -21,7 +21,7 @@ numpy==1.14.1
 Pillow==5.0.0
 pylint==1.8.2
 python-dateutil==2.6.1
-PyYAML==3.12
+PyYAML==5.4
 requests==2.18.4
 rope==0.10.7
 s3transfer==0.1.13
