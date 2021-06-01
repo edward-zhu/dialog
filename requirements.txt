@@ -33,5 +33,5 @@ sklearn==0.0
 smart-open==1.5.6
 torch==0.3.1
 torchvision==0.2.0
-urllib3==1.22
+urllib3==1.26.5
 wrapt==1.10.11
